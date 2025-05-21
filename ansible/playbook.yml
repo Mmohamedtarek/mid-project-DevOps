@@ -7,7 +7,7 @@
       apt:
         update_cache: yes
     
-    - name: install essintial packages
+    - name: install essential packages
       apt:
         name:
          - git
@@ -26,4 +26,61 @@
         name: ubuntu
         groups: docker
         append: yes
+    - name: install postgresql pakages
+      apt:
+        name: 
+         - postgresql
+        state: present
+        update_cache: yes
+    - name: ensure postgresql is running
+      systemd: 
+          name: postgresql
+          state: started
+          enabled: yes
+    - name: create postgresql database
+      become_user: postgres
+      community.postgresql.postgresql_db:
+        name: microservices_db
+        state: present
+        login_user: postgres
+        login_password: postgres
+    - name: create postgresql previlage user
+      community.postgresql.postgresql_user:
+        name: Admin
+        password: "password"
+        state: present 
+        priv: "microservices_db:ALL"
+    - name: Change local authentication for postgres to md5
+      lineinfile:
+        path: "/etc/postgresql/15/main/pg_hba.conf"
+        regexp: '^local\s+all\s+postgres\s+peer'
+        line: 'local   all             postgres                                md5'
+      notify: Restart PostgreSQL
+    - name: Configure listen_addresses in postgresql.conf
+      lineinfile:
+        path: "/etc/postgresql/15/main/postgresql.conf"
+        regexp: '^#?listen_addresses\s*='
+        line: "listen_addresses = '*'"
+      notify: Restart PostgreSQL
+    - name: Allow external access in pg_hba.conf
+      lineinfile:
+        path: "/etc/postgresql/15/main/pg_hba.conf"
+        line: "host    all             all             0.0.0.0/0               md5"
+        create: no
+        insertafter: EOF
+      notify: Restart PostgreSQL
+  handlers:
+    - name: Restart PostgreSQL
+      service:
+        name: postgresql
+        state: restarted
+
+
+
+      
+        
+      
+         
+
+        
 
