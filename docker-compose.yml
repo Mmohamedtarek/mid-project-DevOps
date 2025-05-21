@@ -16,7 +16,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000"
+      - "3000:80"
     depends_on:
       - backend
   db:
@@ -24,6 +24,7 @@ services:
    environment:
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=postgres
+     - POSTGRES_DB=microservices_db
    volumes:
      - pgdata:/var/lib/postgrsql/data
 volumes:
