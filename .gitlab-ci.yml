@@ -72,7 +72,9 @@ test_backend:
   script:
    - echo "Running test backend"
    - pip install -r backend/requirements.txt
-   - pytest backend/tests/
+   - cd backend
+   - export PYTHONPATH=$(pwd)
+   - pytest tests/
   dependencies:
     - install_backend
 
