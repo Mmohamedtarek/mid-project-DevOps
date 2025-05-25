@@ -1,7 +1,7 @@
 from datetime import datetime
 from backend.app import db, Task
 from backend.app import app
-import pytest
+
 
 def test_task_model():
     """Test Task model creation and serialization"""
@@ -20,7 +20,7 @@ def test_task_model():
         assert isinstance(task.created_at, datetime)
         assert isinstance(task.updated_at, datetime)
         
-        # Test serialization
+        
         task_dict = task.to_dict()
         assert isinstance(task_dict, dict)
         assert 'id' in task_dict
