@@ -1,10 +1,11 @@
-import pytest
 import sys
 import os
+import pytest
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import app, db
-from backend.app import Task
+from app import Task
 
 
 @pytest.fixture(scope='module')
@@ -23,6 +24,8 @@ def test_client():
             )
             db.session.add(test_task)
             db.session.commit()
+
         yield testing_client
+
         with app.app_context():
             db.drop_all()
