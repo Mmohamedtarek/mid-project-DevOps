@@ -5,7 +5,6 @@ from backend.app import Task
 
 @pytest.fixture(scope='module')
 def test_client():
-    
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
@@ -13,7 +12,6 @@ def test_client():
     with app.test_client() as testing_client:
         with app.app_context():
             db.create_all()
-            
             test_task = Task(
                 title='Test Task',
                 description='Test Description',

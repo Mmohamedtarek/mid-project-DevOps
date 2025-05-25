@@ -3,7 +3,6 @@ from backend.app import app
 
 
 def test_get_tasks(test_client):
-    """Test GET /api/tasks endpoint"""
     response = test_client.get('/api/tasks')
     assert response.status_code == 200
     data = json.loads(response.data)
@@ -13,7 +12,6 @@ def test_get_tasks(test_client):
 
 
 def test_create_task(test_client):
-    """Test POST /api/tasks endpoint"""
     test_data = {
         'title': 'New Test Task',
         'description': 'New Description',
@@ -31,7 +29,6 @@ def test_create_task(test_client):
 
 
 def test_update_task(test_client):
-    """Test PUT /api/tasks/<id> endpoint"""
     with app.app_context():
         from backend.app import Task
         task = Task.query.first()
@@ -51,20 +48,16 @@ def test_update_task(test_client):
 
 
 def test_delete_task(test_client):
-    """Test DELETE /api/tasks/<id> endpoint"""
     with app.app_context():
         from backend.app import Task
         task = Task.query.first()
         response = test_client.delete(f'/api/tasks/{task.id}')
         assert response.status_code == 204
-        
-       
         deleted_task = Task.query.get(task.id)
         assert deleted_task is None
 
 
 def test_health_check(test_client):
-    """Test health check endpoint"""
     response = test_client.get('/health')
     assert response.status_code == 200
     data = json.loads(response.data)

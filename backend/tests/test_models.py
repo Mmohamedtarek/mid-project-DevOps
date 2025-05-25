@@ -4,7 +4,6 @@ from backend.app import app
 
 
 def test_task_model():
-    """Test Task model creation and serialization"""
     with app.app_context():
         task = Task(
             title='Unit Test Task',
@@ -19,7 +18,6 @@ def test_task_model():
         assert task.completed is True
         assert isinstance(task.created_at, datetime)
         assert isinstance(task.updated_at, datetime)
-        
         
         task_dict = task.to_dict()
         assert isinstance(task_dict, dict)
