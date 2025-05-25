@@ -16,7 +16,7 @@ def test_client():
             test_task = Task(
                 title='Test Task',
                 description='Test',
-                completed=False
+                completed=True
             )
             db.session.add(test_task)
             db.session.commit()
