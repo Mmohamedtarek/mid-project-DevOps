@@ -30,7 +30,7 @@ def test_create_task(test_client):
 
 def test_update_task(test_client):
     with app.app_context():
-        from backend.app import Task
+        from app import Task
         task = Task.query.first()
         test_data = {
             'title': 'Updated Title',
@@ -49,7 +49,7 @@ def test_update_task(test_client):
 
 def test_delete_task(test_client):
     with app.app_context():
-        from backend.app import Task
+        from app import Task
         task = Task.query.first()
         response = test_client.delete(f'/api/tasks/{task.id}')
         assert response.status_code == 204
