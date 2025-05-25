@@ -18,7 +18,7 @@ def test_task_model():
         assert task.completed is True
         assert isinstance(task.created_at, datetime)
         assert isinstance(task.updated_at, datetime)
-        
+
         task_dict = task.to_dict()
         assert isinstance(task_dict, dict)
         assert 'id' in task_dict
