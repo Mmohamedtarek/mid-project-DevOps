@@ -1,8 +1,13 @@
 import json
-from app import app
+from app import db, Task, app
 
 
 def test_get_tasks(test_client):
+    with app.app_context():
+        task = Task(title='Get Test', description='For GET', completed=False)
+        db.session.add(task)
+        db.session.commit()
+
     response = test_client.get('/api/tasks')
     assert response.status_code == 200
     data = json.loads(response.data)
@@ -30,12 +35,11 @@ def test_create_task(test_client):
 
 def test_update_task(test_client):
     with app.app_context():
-        from app import Task
-        task = Task.query.first()
-        test_data = {
-            'title': 'Updated Title',
-            'completed': True
-        }
+        task = Task(title='Old Title', description='...', completed=False)
+        db.session.add(task)
+        db.session.commit()
+
+        test_data = {'title': 'Updated Title', 'completed': True}
         response = test_client.put(
             f'/api/tasks/{task.id}',
             data=json.dumps(test_data),
@@ -49,11 +53,14 @@ def test_update_task(test_client):
 
 def test_delete_task(test_client):
     with app.app_context():
-        from app import Task
-        task = Task.query.first()
+        task = Task(title='To delete', description='...', completed=False)
+        db.session.add(task)
+        db.session.commit()
+
         response = test_client.delete(f'/api/tasks/{task.id}')
         assert response.status_code == 204
-        deleted_task = Task.query.get(task.id)
+
+        deleted_task = db.session.get(Task, task.id)
         assert deleted_task is None
 
 

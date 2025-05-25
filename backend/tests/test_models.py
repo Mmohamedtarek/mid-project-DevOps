@@ -1,6 +1,5 @@
 from datetime import datetime
-from app import db, Task
-from app import app
+from app import db, Task, app
 
 
 def test_task_model():

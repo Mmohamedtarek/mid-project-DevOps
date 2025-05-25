@@ -18,11 +18,6 @@ def test_client():
             db.drop_all()
             db.create_all()
 
-            db.session.add(
-                Task(title='Test Task', description='Test', completed=False)
-            )
-            db.session.commit()
-
         yield testing_client
 
         with app.app_context():
