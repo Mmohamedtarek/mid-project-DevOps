@@ -1,6 +1,7 @@
 import pytest
 from app import app, db, Task
 
+
 @pytest.fixture(scope='module')
 def test_client():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
