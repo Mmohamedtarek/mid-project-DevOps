@@ -1,10 +1,10 @@
 import sys
 import os
+import pytest
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, base_dir)
 
-import pytest
 from app import app, db, Task
 
 
