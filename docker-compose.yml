@@ -4,11 +4,9 @@ services:
       context: ./backend
       dockerfile: dockerfile
     ports:
-      - "5000"
+      - "5000:5000"
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_PORT=5432
+      - DATABASE_URL=postgresql://postgres:postgres@172.31.38.85:5432/microservices_db
     depends_on:
       - db
   frontend:
@@ -19,13 +17,4 @@ services:
       - "80:80"
     depends_on:
       - backend
-  db:
-   image: postgres:15-alpine
-   environment:
-     - POSTGRES_USER=postgres
-     - POSTGRES_PASSWORD=postgres
-     - POSTGRES_DB=microservices_db
-   volumes:
-     - pgdata:/var/lib/postgrsql/data
-volumes:
-  pgdata:
+ 
