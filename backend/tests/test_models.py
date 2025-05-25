@@ -1,6 +1,6 @@
 from datetime import datetime
-from backend.app import db, Task
-from backend.app import app
+from app import db, Task
+from app import app
 
 
 def test_task_model():

@@ -1,5 +1,5 @@
 import json
-from backend.app import app
+from app import app
 
 
 def test_get_tasks(test_client):
