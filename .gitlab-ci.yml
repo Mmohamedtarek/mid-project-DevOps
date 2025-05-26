@@ -132,6 +132,6 @@ ddeploy:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - rsync -az --quiet -e "ssh -o StrictHostKeyChecking=no" . $EC2_USER@$EC2_HOST:/home/ubuntu/app
-    - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker compose up -d --build"
+    - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker-compose up -d --build"
   only:
     - main
