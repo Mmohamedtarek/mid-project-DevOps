@@ -36,7 +36,9 @@ install_backend:
   image: python:3.10.17-alpine
   script:
    - echo "Installing backend dependencies......"
-   - pip install --upgrade pip 
+   - python3 -m venv venv
+   - source venv/bin/activate
+   - pip install --upgrade pip
    - pip install -r backend/requirements.txt
   tags:
     - aws
