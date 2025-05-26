@@ -16,8 +16,7 @@ notify:
         \"text\": \"🛠️ *Pipeline time!* 🚨\nLet's build greatness, one commit at a time 💪\n*Remember*: with great \`git push\` comes great responsibility 😎\nStay focused and let the pipeline flow without any hiccups!😎\n🔧 Project: *$CI_PROJECT_NAME*\n🔁 Commit: \`$CI_COMMIT_SHORT_SHA\`\n👤 By: *$GITLAB_USER_NAME*\"
       }" \
       $SLACK_WEBHOOK
-  tags:
-    - aws
+
 
 install_frontend:
   stage: install
@@ -29,8 +28,7 @@ install_frontend:
   artifacts:
     paths: 
       - frontend/node_modules/
-  tags:
-    - aws
+
 install_backend: 
   stage: install
   image: python:3.10.17-alpine
@@ -38,8 +36,7 @@ install_backend:
    - echo "Installing backend dependencies......"
    - pip install --upgrade pip
    - pip install -r backend/requirements.txt
-  tags:
-    - aws
+  
 lint_frontend:
   stage: lint
   image: node:18-alpine3.21
@@ -49,8 +46,7 @@ lint_frontend:
    - npm run lint
   dependencies:
    - install_frontend
-  tags:
-    - aws
+
 lint_backend:
   stage: lint
   image: python:3.10.17-alpine
@@ -60,8 +56,7 @@ lint_backend:
    - flake8 backend/
   dependencies:
    - install_backend
-  tags:
-    - aws
+
 test_frontend:
   stage: test
   image: node:18-alpine3.21
@@ -71,8 +66,7 @@ test_frontend:
    - npm run test
   dependencies:
     - install_frontend
-  tags:
-    - aws
+
 test_backend:
   stage: test
   image: python:3.10.17-alpine
@@ -84,8 +78,7 @@ test_backend:
    - pytest tests/ 
   dependencies:
     - install_backend
-  tags:
-    - aws
+
 build:
   stage: build
   image: docker:latest
@@ -101,8 +94,6 @@ build:
    - docker buildx build --platform linux/amd64,linux/arm64 -t backend-app .
   only:
    - main
-  tags:
-    - aws
 scan:
   stage: scan
   image:
@@ -121,8 +112,6 @@ scan:
     paths:
       - trivy-backend-report.txt
       - trivy-frontend-report.txt
-  tags:
-    - aws
 deploy:
   stage: deploy
   image: alpine:latest
@@ -139,5 +128,3 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker compose up -d --build"
   only:
     - main
-  tags:
-    - aws
