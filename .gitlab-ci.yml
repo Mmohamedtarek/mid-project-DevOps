@@ -132,7 +132,7 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-   - rsync -avz -e "ssh -o StrictHostKeyChecking=no" . $EC2_USER@$EC2_HOST:/app
-   - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /app && docker compose up -d --build"
+    - rsync -avz -e "ssh -o StrictHostKeyChecking=no" . $EC2_USER@$EC2_HOST:/home/ubuntu/app
+    - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker compose up -d --build"
   only:
-   - main
+    - main
