@@ -13,7 +13,7 @@ notify:
    - >
      curl -X POST -H 'Content-type: application/json' \
       --data "{
-        \"text\": \"🛠️ *Pipeline time!* 🚨\nLet's build greatness, one commit at a time 💪\n*Remember*: with great `git push` comes great responsibility 😎\nStay focused and let the pipeline flow without any hiccups!😎\n🔧 Project: *$CI_PROJECT_NAME*\n🔁 Commit: \`$CI_COMMIT_SHORT_SHA\`\n👤 By: *$GITLAB_USER_NAME*\"
+        \"text\": \"🛠️ *Pipeline time!* 🚨\nLet's build greatness, one commit at a time 💪\n*Remember*: with great \`git push\` comes great responsibility 😎\nStay focused and let the pipeline flow without any hiccups!😎\n🔧 Project: *$CI_PROJECT_NAME*\n🔁 Commit: \`$CI_COMMIT_SHORT_SHA\`\n👤 By: *$GITLAB_USER_NAME*\"
       }" \
       $SLACK_WEBHOOK
 
@@ -23,7 +23,7 @@ install_frontend:
   script: 
    - echo "Installing frontend dependencies....."
    - cd frontend
-   - npm install
+   - npm install --silent
   artifacts:
     paths: 
       - frontend/node_modules/
@@ -60,9 +60,9 @@ test_frontend:
   stage: test
   image: node:18-alpine3.21
   script:
-   - echo "Running test frontend"
+   - echo "Running frontend tests..."
    - cd frontend
-   - npm run test
+   - npm run test -- --silent
   dependencies:
     - install_frontend
 
@@ -70,11 +70,11 @@ test_backend:
   stage: test
   image: python:3.10.17-alpine
   script:
-   - echo "Running test backend"
+   - echo "Running backend tests..."
    - pip install -r backend/requirements.txt
    - cd backend
    - export PYTHONPATH=$(pwd)
-   - pytest tests/
+   - pytest tests/ --maxfail=1 --disable-warnings
   dependencies:
     - install_backend
 
@@ -87,38 +87,31 @@ build:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
     - docker buildx create --use
   script:
-   - cd frontend 
-   - docker buildx build --platform linux/amd64,linux/arm64 -t frontend-app .
-   - cd ..
-   - cd backend
-   - docker buildx build --platform linux/amd64,linux/arm64 -t backend-app .
+   - cd frontend
+   - docker buildx build --platform linux/amd64,linux/arm64 -t frontend-app . > /dev/null
+   - cd ../backend
+   - docker buildx build --platform linux/amd64,linux/arm64 -t backend-app . > /dev/null
   only:
    - main
+
 scan:
   stage: scan
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - apk add --no-cache curl
-    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-    - docker images
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   script:
-    - echo "Scanning backend image..."
-    - trivy image backend-app > trivy-backend-report.txt || true
-    - echo "Scanning frontend image..."
-    - trivy image frontend-app > trivy-frontend-report.txt || true
+    - echo "Running trivy scan on backend..."
+    - trivy image backend-app --quiet > trivy-backend-report.txt
+    - echo "Running trivy scan on frontend..."
+    - trivy image frontend-app --quiet > trivy-frontend-report.txt
   dependencies:
     - build
+  only:
+    - main
   artifacts:
     paths:
       - trivy-backend-report.txt
       - trivy-frontend-report.txt
-  only:
-    - main
 
 deploy:
   stage: deploy
@@ -132,7 +125,7 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - rsync -avz -e "ssh -o StrictHostKeyChecking=no" . $EC2_USER@$EC2_HOST:/home/ubuntu/app
+    - rsync -az --quiet -e "ssh -o StrictHostKeyChecking=no" . $EC2_USER@$EC2_HOST:/home/ubuntu/app
     - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker compose up -d --build"
   only:
     - main
