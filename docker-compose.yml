@@ -7,8 +7,6 @@ services:
       - "5000:5000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@172.31.38.85:5432/microservices_db
-    depends_on:
-      - db
   frontend:
     build:
       context: ./frontend
