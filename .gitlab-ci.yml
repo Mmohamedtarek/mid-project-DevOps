@@ -71,7 +71,7 @@ test_frontend:
   script:
    - echo "Running frontend tests..."
    - cd frontend
-   - npm run test -- --silent
+   - npm run test
   dependencies:
     - install_frontend
   tags:
@@ -99,9 +99,9 @@ build:
     - docker buildx create --use
   script:
    - cd frontend
-   - docker buildx build --platform linux/amd64,linux/arm64 -t frontend-app . > /dev/null
+   - docker buildx build --platform linux/amd64,linux/arm64 -t frontend-app . 
    - cd ../backend
-   - docker buildx build --platform linux/amd64,linux/arm64 -t backend-app . > /dev/null
+   - docker buildx build --platform linux/amd64,linux/arm64 -t backend-app .
   only:
    - main
   tags:
