@@ -135,16 +135,16 @@ deploy:
     - apk add --no-cache openssh-client rsync docker-cli
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_MACHINE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$SSH_MACHIEN_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - eval $(ssh-agent -s)
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $VM_HOST >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - rsync -az --quiet -e "ssh" frontend.tar backend.tar docker-compose.yml $VM_USER@$VM_HOST:/home/ubuntu/app
+    - rsync -az --quiet -e "ssh" frontend.tar backend.tar docker-compose.yml $VM_USER@$VM_HOST:/home/$VM_USER/app
     - ssh $VM_USER@$VM_HOST "
-        cd /home/ubuntu/app &&
+        cd /home/$VM_USER/app &&
         docker load -i backend.tar &&
         docker load -i frontend.tar &&
         docker compose up -d
