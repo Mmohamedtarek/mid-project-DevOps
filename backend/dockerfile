@@ -1,21 +1,21 @@
-FROM python:3.10.17-alpine AS builder
+FROM python:3.10.17-alpine as builder
 
 WORKDIR /app
-
 COPY requirements.txt .
+RUN python -m venv /opt/venv \
+    && . /opt/venv/bin/activate \
+    && pip install --upgrade pip \
+    && pip install -r requirements.txt
 
-RUN pip install --no-cache-dir -r requirements.txt --target=/install
+COPY . .
 
-FROM  python:3.10.17-alpine AS runtime
+FROM python:3.10.17-alpine
 
+ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 
-COPY --from=builder /install /usr/local
-
-RUN pip install --upgrade pip && pip install setuptools==78.1.1
-
-COPY . . 
+COPY --from=builder /opt/venv /opt/venv
+COPY . .
 
 EXPOSE 5000
-
-CMD [ "python", "app.py" ]
+CMD ["python", "app.py"]
