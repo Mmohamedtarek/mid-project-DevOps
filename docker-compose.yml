@@ -1,18 +1,14 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: dockerfile
+    image: backend-app:latest
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@172.18.0.1:5432/microservices_db
+      - DATABASE_URL=postgresql://postgres:postgres@172.31.38.85:5432/microservices_db
+
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: dockerfile
+    image: frontend-app:latest
     ports:
       - "80:80"
     depends_on:
       - backend
- 
