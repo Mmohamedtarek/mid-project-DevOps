@@ -8,7 +8,7 @@ A complete DevOps project for a **Task Management System** built with microservi
 
 ## Architecture
 
-![Task Manager](image-1.png)
+![Task Manager](image-2.png))
 
 ---
 
