@@ -89,7 +89,7 @@ build:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
     - docker buildx create --use
   script:
-    - docker buildx build --platform linux/amd64 -t frontend-app:latest -o type=docker ./frontend -f frontend/Dockerfile
+    - docker buildx build --platform linux/amd64 -t frontend-app:latest -o type=docker ./frontend -f frontend/dockerfile
     - docker buildx build --platform linux/amd64 -t backend-app:latest -o type=docker ./backend -f backend/dockerfile
     - docker save frontend-app:latest -o frontend.tar
     - docker save backend-app:latest -o backend.tar
